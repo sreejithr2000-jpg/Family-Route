@@ -34,20 +34,8 @@ img, svg { display: block; }
 /* --- shared layout --- */
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; position: relative; z-index: 2; }
 
-/* Kasavu gold border frame (A signature) */
-.kasavu-frame {
-  position: fixed;
-  inset: var(--frame-inset);
-  border: 1.5px solid var(--brass);
-  z-index: 50;
-  pointer-events: none;
-}
-.kasavu-frame::after {
-  content: "";
-  position: absolute;
-  inset: 5px;
-  border: 1px solid rgba(194, 145, 47, 0.45);
-}
+/* Kasavu gold border frame — removed (content was colliding with it). */
+.kasavu-frame { display: none; }
 
 /* thin engraved rule (C) */
 .rule { height: 1px; background: var(--line); border: 0; }

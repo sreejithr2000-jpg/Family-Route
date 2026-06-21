@@ -25,8 +25,8 @@ export interface TreeLayout {
 // Node + spacing geometry (px).
 export const NODE_W = 194;
 export const NODE_H = 104;
-const X_GAP = 64; // breathing room between separate people in a row
-const SPOUSE_GAP = 20; // married couples sit close, like a tied knot
+const X_GAP = 54; // breathing room between separate people in a row
+const SPOUSE_GAP = 48; // married couples sit a little apart, joined by the knot
 const X_SPACING = NODE_W + X_GAP;
 const Y_SPACING = NODE_H + 128;
 
@@ -149,13 +149,15 @@ export function layoutFamily(
     layer.forEach((id, i) => x.set(id, i * X_SPACING));
   }
 
-  for (let iter = 0; iter < 14; iter++) {
+  for (let iter = 0; iter < 22; iter++) {
     const downward = iter % 2 === 0;
     const range = downward ? [...layers.keys()] : [...layers.keys()].reverse();
     for (const gv of range) {
       const layer = layers[gv];
       if (!layer) continue;
-      // desired x = average of neighbours' x
+
+      // desired x = average of each node's neighbours (else keep current)
+      const desired = new Map<string, number>();
       for (const id of layer) {
         const ns = neighborsInAdjacent(id);
         let sum = 0;
@@ -167,18 +169,25 @@ export function layoutFamily(
             count++;
           }
         }
-        if (count) x.set(id, sum / count);
+        desired.set(id, count ? sum / count : x.get(id)!);
       }
-      // resolve overlaps left-to-right; couples keep a tighter gap than others
-      const sorted = [...layer].sort((a, b) => x.get(a)! - x.get(b)!);
+
+      // pack in order of desired position, honouring min gaps (couples wider now)
+      const sorted = [...layer].sort((a, b) => desired.get(a)! - desired.get(b)!);
+      const pos = new Map<string, number>();
+      pos.set(sorted[0], desired.get(sorted[0])!);
       for (let i = 1; i < sorted.length; i++) {
-        const prevId = sorted[i - 1];
-        const curId = sorted[i];
-        const married = spouses(g, prevId).some((s) => s.id === curId);
+        const married = spouses(g, sorted[i - 1]).some((s) => s.id === sorted[i]);
         const minGap = NODE_W + (married ? SPOUSE_GAP : X_GAP);
-        const prev = x.get(prevId)!;
-        if (x.get(curId)! < prev + minGap) x.set(curId, prev + minGap);
+        pos.set(sorted[i], Math.max(desired.get(sorted[i])!, pos.get(sorted[i - 1])! + minGap));
       }
+
+      // re-centre the packed row on the average desired position so it doesn't
+      // drift sideways (this is what kept stray couples far from everyone else)
+      let shift = 0;
+      for (const id of sorted) shift += desired.get(id)! - pos.get(id)!;
+      shift /= sorted.length;
+      for (const id of sorted) x.set(id, pos.get(id)! + shift);
     }
   }
 

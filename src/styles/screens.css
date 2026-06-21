@@ -519,7 +519,7 @@
 .family-card .ava { width: 44px; height: 44px; flex: none; display: grid; place-items: center; font-size: 1.5rem; border-radius: 50%; background: var(--cream-2); border: 1px solid var(--line); }
 .family-card .info { flex: 1; min-width: 0; }
 .family-card .nm { font-weight: 600; }
-.me-tag { margin-left: 8px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cream); background: var(--terracotta); padding: 2px 7px; border-radius: 20px; }
+.me-tag { display: inline-block; margin-top: 6px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cream); background: var(--terracotta); padding: 2px 8px; border-radius: 20px; }
 .family-card .mt { color: var(--ink-soft); font-size: 0.82rem; }
 .family-card .hh { color: var(--leaf); font-size: 0.76rem; margin-top: 2px; }
 .family-card .row-actions { display: flex; gap: 4px; }
@@ -792,10 +792,11 @@
   .modal-foot { padding: 14px 18px; }
 
   /* detail drawer becomes a bottom sheet on the tree */
-  .person-drawer { top: auto; bottom: 16px; left: 16px; right: 16px; width: auto; }
+  .person-drawer { top: auto; bottom: 16px; left: 16px; right: 16px; width: auto; max-height: 50vh; overflow-y: auto; }
 
-  /* tree controls a touch smaller */
-  .tree-controls { right: 14px; bottom: 16px; }
+  /* tree controls move to the right edge, vertically centred, so the bottom
+     sheet (detail card) never covers them; lay them out as a neat column */
+  .tree-controls { right: 12px; bottom: auto; top: 50%; transform: translateY(-50%); }
   .tree-controls button { width: 40px; height: 40px; }
 }
 

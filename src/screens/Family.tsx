@@ -81,12 +81,10 @@ export function Family() {
             <div key={p.id} className={`family-card${p.id === egoId ? " me" : ""}`}>
               <span className="ava">{avatarFor(p)}</span>
               <div className="info">
-                <div className="nm">
-                  {p.name}
-                  {p.id === egoId && <span className="me-tag">you</span>}
-                </div>
+                <div className="nm">{p.name}</div>
                 <div className="mt">{subtitleFor(p) || "—"}</div>
                 {householdName(p.householdId) && <div className="hh">🏠 {householdName(p.householdId)}</div>}
+                {p.id === egoId && <span className="me-tag">you</span>}
               </div>
               <div className="row-actions">
                 <button title="Edit" onClick={() => setEditing(p)}>✎</button>
