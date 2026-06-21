@@ -5,10 +5,15 @@ import { avatarFor, ageOf } from "../lib/people";
 import { layoutFamily, NODE_W, NODE_H } from "../lib/treeLayout";
 import { buildIndex, parents } from "../lib/graph";
 import { sideForAll, type Side } from "../lib/relationship";
+import { layoutLineage, type LSide } from "../lib/lineageLayout";
 import type { Person } from "../data/types";
 import { BrandMark } from "../components/BrandMark";
 
 type SideFilter = "all" | "paternal" | "maternal";
+type ViewMode = "whole" | "lineage";
+
+const sideColour = (s: LSide) =>
+  s === "paternal" ? "var(--terracotta)" : s === "maternal" ? "var(--leaf)" : "var(--brass)";
 
 /** A small, muted lotus — a gentle, respectful mark for someone who has passed. */
 function MemorialLotus() {
@@ -63,6 +68,12 @@ export function Tree() {
     [data, egoId],
   );
 
+  const lineageData = useMemo(
+    () => (egoId ? layoutLineage(egoId, data) : null),
+    [egoId, data],
+  );
+
+  const [mode, setMode] = useState<ViewMode>("whole");
   const [sideFilter, setSideFilter] = useState<SideFilter>("all");
   const [householdFilter, setHouseholdFilter] = useState<string>("all");
 
@@ -107,10 +118,12 @@ export function Tree() {
     active: false, sx: 0, sy: 0, ox: 0, oy: 0, moved: false,
   });
 
-  // Centre the view on "me" once we know the viewport size.
+  // Centre the view on "me" once we know the viewport size, and whenever the
+  // view (whole-family vs lineage) changes.
   useLayoutEffect(() => {
-    if (!layout || !egoId || !viewportRef.current) return;
-    const me = layout.nodes.get(egoId);
+    const v = mode === "lineage" ? lineageData : layout;
+    if (!v || !egoId || !viewportRef.current) return;
+    const me = v.nodes.get(egoId);
     const rect = viewportRef.current.getBoundingClientRect();
     if (!me) return;
     const k = 0.85;
@@ -119,7 +132,7 @@ export function Tree() {
       y: rect.height * 0.42 - (me.y + NODE_H / 2) * k,
       k,
     });
-  }, [layout, egoId]);
+  }, [layout, lineageData, egoId, mode]);
 
   // Native wheel listener so we can preventDefault (zoom toward cursor).
   useEffect(() => {
@@ -142,10 +155,17 @@ export function Tree() {
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
-  if (!egoId || !layout) {
+  if (!egoId || !layout || !lineageData) {
     navigate("/who", { replace: true });
     return null;
   }
+
+  // Active view: the whole-family network, or the ego-centric lineage hourglass.
+  const isLineage = mode === "lineage";
+  const view = isLineage ? lineageData : layout;
+  const activeNodes = view.nodes;
+  const activeWidth = view.width;
+  const activeHeight = view.height;
 
   function onPointerDown(e: React.PointerEvent) {
     drag.current = { active: true, sx: e.clientX, sy: e.clientY, ox: tf.x, oy: tf.y, moved: false };
@@ -175,14 +195,14 @@ export function Tree() {
     });
 
   const centerOnMe = () => {
-    const me = layout.nodes.get(egoId);
+    const me = activeNodes.get(egoId);
     const rect = viewportRef.current!.getBoundingClientRect();
     if (!me) return;
     const k = 0.9;
     setTf({ x: rect.width / 2 - (me.x + NODE_W / 2) * k, y: rect.height * 0.42 - (me.y + NODE_H / 2) * k, k });
   };
 
-  // A node passes the filters if it matches both the side and household choices.
+  // Filters apply to the whole-family view only (lineage already splits sides).
   const matches = (id: string): boolean => {
     if (sideFilter !== "all") {
       const s = sideMap.get(id);
@@ -193,11 +213,11 @@ export function Tree() {
     }
     return true;
   };
-  const filtering = sideFilter !== "all" || householdFilter !== "all";
+  const filtering = !isLineage && (sideFilter !== "all" || householdFilter !== "all");
 
   // Print / Save as PDF: fit the whole tree to the page, then open the dialog.
   const printTree = () => {
-    const fit = Math.min(1, 1040 / layout.width);
+    const fit = Math.min(1, 1040 / activeWidth);
     setTf({ x: 0, y: 0, k: fit });
     document.body.classList.add("printing-tree");
     setTimeout(() => {
@@ -222,24 +242,40 @@ export function Tree() {
 
       <div className="tree-filterbar">
         <div className="seg">
-          {(["all", "paternal", "maternal"] as SideFilter[]).map((s) => (
-            <button
-              key={s}
-              className={sideFilter === s ? "on" : ""}
-              onClick={() => setSideFilter(s)}
-            >
-              {s === "all" ? "Whole family" : s === "paternal" ? "Father’s side" : "Mother’s side"}
+          {(["whole", "lineage"] as ViewMode[]).map((m) => (
+            <button key={m} className={mode === m ? "on" : ""} onClick={() => setMode(m)}>
+              {m === "whole" ? "Whole family" : "My lineage"}
             </button>
           ))}
         </div>
-        {data.households.length > 0 && (
-          <select value={householdFilter} onChange={(e) => setHouseholdFilter(e.target.value)}>
-            <option value="all">All households</option>
-            {data.households.map((h) => (
-              <option key={h.id} value={h.id}>🏠 {h.name}</option>
-            ))}
-          </select>
+
+        {!isLineage && (
+          <>
+            <div className="seg">
+              {(["all", "paternal", "maternal"] as SideFilter[]).map((s) => (
+                <button key={s} className={sideFilter === s ? "on" : ""} onClick={() => setSideFilter(s)}>
+                  {s === "all" ? "Everyone" : s === "paternal" ? "Father’s side" : "Mother’s side"}
+                </button>
+              ))}
+            </div>
+            {data.households.length > 0 && (
+              <select value={householdFilter} onChange={(e) => setHouseholdFilter(e.target.value)}>
+                <option value="all">All households</option>
+                {data.households.map((h) => (
+                  <option key={h.id} value={h.id}>🏠 {h.name}</option>
+                ))}
+              </select>
+            )}
+          </>
         )}
+
+        {isLineage && (
+          <div className="side-legend">
+            <span><i style={{ background: "var(--terracotta)" }} /> Father’s line</span>
+            <span><i style={{ background: "var(--leaf)" }} /> Mother’s line</span>
+          </div>
+        )}
+
         <button className="ghost-mini" onClick={() => navigate("/family")}>+ Add / manage</button>
       </div>
 
@@ -255,13 +291,12 @@ export function Tree() {
           className="tree-canvas"
           style={{
             transform: `translate(${tf.x}px, ${tf.y}px) scale(${tf.k})`,
-            width: layout.width,
-            height: layout.height,
+            width: activeWidth,
+            height: activeHeight,
           }}
         >
-          <svg className="tree-links" width={layout.width} height={layout.height}>
-            {/* spouse connectors */}
-            {layout.links
+          <svg className="tree-links" width={activeWidth} height={activeHeight}>
+            {!isLineage && layout.links
               .filter((l) => l.type === "spouse")
               .map((l, i) => {
                 const a = layout.nodes.get(l.from)!;
@@ -289,27 +324,53 @@ export function Tree() {
                   </g>
                 );
               })}
-            {/* parent → child descents — leaf-green "vines" with marigold buds */}
-            {descents.map((p) => {
+            {!isLineage && descents.map((p) => {
               const dim = filtering && !matches(p.key);
               return (
                 <g key={p.key} opacity={dim ? 0.1 : 1}>
-                  <path
-                    d={p.d}
-                    fill="none"
-                    stroke="var(--leaf)"
-                    strokeWidth={2.4}
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                  />
+                  <path d={p.d} fill="none" stroke="var(--leaf)" strokeWidth={2.4} strokeLinejoin="round" strokeLinecap="round" />
                   <circle cx={p.sx} cy={p.sy} r={3} fill="var(--leaf-deep)" />
                   <circle cx={p.cx} cy={p.cy} r={3.6} fill="#F4A300" stroke="var(--cream)" strokeWidth={1.2} />
                 </g>
               );
             })}
+
+            {/* lineage links: side-coloured pedigree lines + spouse knot */}
+            {isLineage && lineageData.links.map((l, i) => {
+              const a = lineageData.nodes.get(l.from)!;
+              const b = lineageData.nodes.get(l.to)!;
+              if (l.spouse) {
+                const left = a.x <= b.x ? a : b;
+                const right = a.x <= b.x ? b : a;
+                const y = left.y + NODE_H / 2;
+                return (
+                  <g key={`l${i}`}>
+                    <line x1={left.x + NODE_W} y1={y} x2={right.x} y2={y} stroke="var(--terracotta)" strokeWidth={2.2} strokeLinecap="round" />
+                    <KnotFlower x={(left.x + NODE_W + right.x) / 2} y={y} />
+                  </g>
+                );
+              }
+              // a is the parent (higher up), b the child (lower)
+              const px = a.x + NODE_W / 2;
+              const py = a.y + NODE_H;
+              const cx = b.x + NODE_W / 2;
+              const cy = b.y;
+              const midY = (py + cy) / 2;
+              const dir = cx >= px ? 1 : -1;
+              const r = Math.min(10, Math.max(0, midY - py - 1), Math.max(0, cy - midY - 1));
+              const d =
+                `M ${px} ${py} L ${px} ${midY - r} Q ${px} ${midY} ${px + dir * r} ${midY} ` +
+                `L ${cx - dir * r} ${midY} Q ${cx} ${midY} ${cx} ${midY + r} L ${cx} ${cy}`;
+              return (
+                <g key={`l${i}`}>
+                  <path d={d} fill="none" stroke={sideColour(l.side)} strokeWidth={2.4} strokeLinejoin="round" strokeLinecap="round" />
+                  <circle cx={cx} cy={cy} r={3.4} fill={sideColour(l.side)} stroke="var(--cream)" strokeWidth={1.2} />
+                </g>
+              );
+            })}
           </svg>
 
-          {[...layout.nodes.values()].map((n) => {
+          {[...activeNodes.values()].map((n) => {
             const person = peopleById.get(n.id)!;
             const isEgo = n.id === egoId;
             const isSel = n.id === selected;
@@ -317,7 +378,7 @@ export function Tree() {
             return (
               <button
                 key={n.id}
-                className={`tree-node g-${person.gender ?? "other"}${isEgo ? " ego" : ""}${isSel ? " selected" : ""}${filtering && !matches(n.id) ? " dim" : ""}`}
+                className={`tree-node g-${person.gender ?? "other"}${isEgo ? " ego" : ""}${isSel ? " selected" : ""}${filtering && !matches(n.id) ? " dim" : ""}${isLineage && "side" in n ? ` lineage-${n.side}` : ""}`}
                 style={{ left: n.x, top: n.y, width: NODE_W, height: NODE_H }}
                 onClick={(e) => {
                   e.stopPropagation();

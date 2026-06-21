@@ -502,6 +502,15 @@
 .tree-node.dim { opacity: 0.12; filter: grayscale(0.4); pointer-events: none; }
 .tree-node { transition: opacity 0.3s, box-shadow 0.2s, border-color 0.2s; }
 
+/* lineage view: tint each card's edge by side */
+.tree-node.lineage-paternal { border-left: 4px solid var(--terracotta); }
+.tree-node.lineage-maternal { border-left: 4px solid var(--leaf); }
+.tree-node.lineage-core { border-left: 4px solid var(--brass); }
+
+.side-legend { display: flex; gap: 16px; align-items: center; font-size: 0.82rem; color: var(--ink-soft); }
+.side-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.side-legend i { width: 16px; height: 4px; border-radius: 2px; display: inline-block; }
+
 /* --- Manage family --- */
 .family-screen { min-height: 100vh; }
 .family-body { max-width: 880px; margin: 0 auto; padding: 30px 24px 80px; }
