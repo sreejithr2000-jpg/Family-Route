@@ -26,9 +26,10 @@
   --accent: var(--brass);
 
   /* --- Typography --- */
-  --font-display: "Fraunces", Georgia, serif;        /* warm, characterful (A) */
-  --font-editorial: "Cormorant Garamond", serif;     /* refined headings (C) */
-  --font-body: "Mukta", system-ui, sans-serif;       /* clean UI/body */
+  --indic: "Noto Sans Tamil", "Noto Sans Malayalam"; /* Tamil/Malayalam glyphs */
+  --font-display: "Fraunces", var(--indic), Georgia, serif;    /* warm, characterful (A) */
+  --font-editorial: "Cormorant Garamond", var(--indic), serif; /* refined headings (C) */
+  --font-body: "Mukta", var(--indic), system-ui, sans-serif;   /* clean UI/body */
 
   /* --- Spacing / shape --- */
   --radius: 16px;

@@ -127,16 +127,35 @@
 .person-pick .mt { color: var(--ink-soft); font-size: 0.84rem; }
 
 /* --- Ego Home --- */
-.home-top { display: flex; align-items: center; justify-content: space-between; padding: 26px 0; }
+.home-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 22px 0; flex-wrap: wrap; }
+.home-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .home-switch {
   background: transparent; border: 1.5px solid var(--line); color: var(--ink-soft);
   padding: 9px 18px; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.88rem; transition: 0.2s;
 }
 .home-switch:hover { border-color: var(--terracotta); color: var(--terracotta); }
+
+/* language pills (right side of the home bar) */
+.lang-switch {
+  display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius-pill);
+  overflow: hidden; background: var(--cream-card);
+}
+.lang-switch button {
+  background: transparent; border: none; padding: 8px 15px; font-size: 0.84rem; font-weight: 600;
+  color: var(--ink-soft); transition: 0.2s; border-right: 1px solid var(--line-soft);
+}
+.lang-switch button:last-child { border-right: none; }
+.lang-switch button.on { background: var(--leaf-deep); color: var(--cream); }
+.lang-switch button:not(.on):hover { color: var(--terracotta); }
+
 .greeting { text-align: center; padding: 30px 0 10px; }
 .greeting .namaskaram { font-family: var(--font-editorial); font-style: italic; color: var(--brass); font-size: 1.2rem; }
 .greeting h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.4rem, 5vw, 3.6rem); margin-top: 6px; }
 .greeting .meta { color: var(--ink-soft); margin-top: 8px; }
+.home-welcome {
+  font-family: var(--font-editorial); font-style: italic; color: var(--leaf-deep);
+  font-size: 1.18rem; max-width: 34em; margin: 16px auto 0; line-height: 1.4;
+}
 .home-hub {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin: 40px 0;
 }
