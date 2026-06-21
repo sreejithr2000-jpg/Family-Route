@@ -10,6 +10,8 @@ const EGO_KEY = "family-routes:ego:v1";
 const AUDIT_KEY = "family-routes:audit:v1";
 const UNDO_KEY = "family-routes:undo:v1";
 const UNDO_LIMIT = 25;
+const DEMO_KEY = "family-routes:demo:v1"; // "false" once the user starts their own
+const FAMILY_NAME_KEY = "family-routes:familyName:v1";
 
 export interface AuditEntry {
   id: string;
@@ -174,6 +176,40 @@ export const store = {
     saveData(structuredClone(seedFamily));
     localStorage.removeItem(UNDO_KEY);
     localStorage.removeItem(AUDIT_KEY);
+    localStorage.removeItem(DEMO_KEY);
+    localStorage.removeItem(FAMILY_NAME_KEY);
     this.clearEgo();
+  },
+
+  // --- onboarding / personalisation ---
+
+  /** True until the user has started their own family (still showing the demo). */
+  isDemo(): boolean {
+    return localStorage.getItem(DEMO_KEY) !== "false";
+  },
+
+  getFamilyName(): string {
+    return localStorage.getItem(FAMILY_NAME_KEY) ?? "";
+  },
+  setFamilyName(name: string): void {
+    const n = name.trim();
+    if (n) localStorage.setItem(FAMILY_NAME_KEY, n);
+    else localStorage.removeItem(FAMILY_NAME_KEY);
+  },
+
+  /**
+   * Wipe the demo, start a blank family, plant the first person (you), and
+   * make them the current identity. Returns the new person's id.
+   */
+  beginFamily(person: Person, familyName: string): string {
+    const id = `p-${uid()}`;
+    saveData({ people: [{ ...person, id }], edges: [], households: [] });
+    localStorage.removeItem(UNDO_KEY);
+    localStorage.removeItem(AUDIT_KEY);
+    localStorage.setItem(DEMO_KEY, "false");
+    this.setFamilyName(familyName);
+    this.setEgoId(id);
+    pushAudit(`Started the family with ${person.name}`);
+    return id;
   },
 };

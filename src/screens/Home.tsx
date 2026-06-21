@@ -11,6 +11,8 @@ export function Home() {
   const egoId = store.getEgoId();
   const me = useMemo(() => (egoId ? store.getPerson(egoId) : undefined), [egoId]);
   const totalPeople = useMemo(() => store.getPeople().length, []);
+  const familyName = store.getFamilyName();
+  const isDemo = store.isDemo();
 
   if (!me) {
     // No identity selected yet — send them to the picker.
@@ -19,6 +21,7 @@ export function Home() {
   }
 
   const age = ageOf(me);
+  const justStarted = !isDemo && totalPeople <= 1;
 
   function switchPerson() {
     store.clearEgo();
@@ -38,7 +41,14 @@ export function Home() {
           </button>
         </div>
 
+        {isDemo && (
+          <Link to="/start" className="demo-banner inline">
+            ✦ This is the demo family — <b>start your own&nbsp;→</b>
+          </Link>
+        )}
+
         <header className="greeting">
+          {familyName && <div className="family-name">{familyName}</div>}
           <div className="namaskaram">Namaskaram,</div>
           <h1>
             <span style={{ marginRight: 12 }}>{avatarFor(me)}</span>
@@ -50,6 +60,12 @@ export function Home() {
             {`  ·  one of ${totalPeople} in the family`}
           </div>
         </header>
+
+        {justStarted && (
+          <Link to="/family" className="start-hint">
+            🌱 Your tree has just you so far. <b>Add your parents, partner, and children →</b>
+          </Link>
+        )}
 
         <section className="home-hub">
           <Link to="/tree" className="hub-card live">

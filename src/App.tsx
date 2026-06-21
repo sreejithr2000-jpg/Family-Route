@@ -7,12 +7,14 @@ import { Relate } from "./screens/Relate";
 import { Events } from "./screens/Events";
 import { Invite } from "./screens/Invite";
 import { Family } from "./screens/Family";
+import { Welcome } from "./screens/Welcome";
 
 export default function App() {
   return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/start" element={<Welcome />} />
         <Route path="/who" element={<WhoAreYou />} />
         <Route path="/home" element={<Home />} />
         <Route path="/tree" element={<Tree />} />

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { store } from "../data/store";
 import { BrandMark } from "../components/BrandMark";
 import { Pookalam } from "../components/Pookalam";
 import { FloatingMotifs } from "../components/FloatingMotifs";
@@ -10,11 +11,17 @@ const RELATIONS = [
 ];
 
 export function Landing() {
+  const isDemo = store.isDemo();
   return (
     <>
       <div className="kasavu-frame" />
       <FloatingMotifs />
       <Toran />
+      {isDemo && (
+        <Link to="/start" className="demo-banner">
+          ✦ You’re exploring a demo family — <b>start your own&nbsp;→</b>
+        </Link>
+      )}
       <div className="wrap">
         <nav className="site-nav">
           <span className="reveal d1"><BrandMark /></span>
@@ -37,8 +44,8 @@ export function Landing() {
               birthday, and never forget a name at the wedding again.
             </p>
             <div className="hero-cta reveal d4">
-              <Link to="/who" className="btn btn-solid">Open the family tree</Link>
-              <a href="#features" className="btn btn-ghost">See how it works</a>
+              <Link to="/start" className="btn btn-solid">Start our family</Link>
+              <Link to="/who" className="btn btn-ghost">Explore the demo</Link>
             </div>
           </div>
 
@@ -103,7 +110,7 @@ export function Landing() {
             Built for our family, by our family — private, warm, and free. No passwords to
             remember, just pick your name and step inside.
           </p>
-          <Link to="/who" className="btn btn-terracotta">Enter our home →</Link>
+          <Link to="/start" className="btn btn-terracotta">Start our family →</Link>
         </section>
       </div>
 

@@ -584,6 +584,50 @@
 .relate2-reverse { margin-top: 12px; color: var(--ink-soft); font-style: italic; font-family: var(--font-editorial); font-size: 1rem; }
 .relate2-reverse b { color: var(--leaf); font-style: normal; }
 
+/* --- Welcome / onboarding --- */
+.welcome-screen { min-height: 100vh; position: relative; }
+.welcome-body {
+  position: relative; z-index: 2; max-width: 600px; margin: 0 auto;
+  padding: 40px 24px 80px; display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.welcome-intro, .welcome-form { width: 100%; max-width: 460px; margin-top: 26px; }
+.welcome-pookalam { display: flex; justify-content: center; margin-bottom: 8px; }
+.welcome-body .eyebrow { margin-bottom: 18px; }
+.welcome-body h1 {
+  font-family: var(--font-display); font-weight: 900; letter-spacing: -0.5px;
+  font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.05; margin-bottom: 14px;
+}
+.welcome-body .lede { color: var(--ink-soft); font-size: 1.08rem; margin: 0 auto 26px; max-width: 30em; }
+.welcome-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+.welcome-note { color: var(--ink-faint); font-size: 0.85rem; margin-top: 18px; max-width: 28em; margin-inline: auto; }
+.welcome-form { text-align: left; }
+.welcome-form h1, .welcome-form .eyebrow, .welcome-form .lede { text-align: center; }
+.welcome-form .lede { margin-bottom: 24px; }
+.welcome-form .welcome-cta { justify-content: space-between; margin-top: 22px; }
+
+/* --- Demo banner + start hint --- */
+.demo-banner {
+  display: block; text-align: center; text-decoration: none;
+  background: var(--leaf-deep); color: var(--cream-2);
+  font-size: 0.9rem; padding: 9px 18px; position: relative; z-index: 40;
+}
+.demo-banner b { color: var(--brass-bright); }
+.demo-banner:hover b { text-decoration: underline; }
+.demo-banner.inline { border-radius: var(--radius-pill); margin: 8px auto 0; max-width: max-content; }
+
+.family-name {
+  font-family: var(--font-editorial); font-style: italic; color: var(--brass);
+  font-size: 1.3rem; margin-bottom: 4px;
+}
+.start-hint {
+  display: block; text-align: center; text-decoration: none;
+  background: linear-gradient(160deg, var(--cream-card), #f6e8cb);
+  border: 1px dashed var(--brass); border-radius: var(--radius);
+  padding: 16px 20px; margin: 8px auto 0; max-width: 520px; color: var(--ink-soft);
+}
+.start-hint b { color: var(--terracotta); }
+.start-hint:hover { border-style: solid; }
+
 /* --- Floating ambient motifs --- */
 .floating-motifs { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .motif { position: absolute; opacity: 0.5; will-change: transform; filter: drop-shadow(0 4px 6px rgba(55, 39, 27, 0.12)); }
