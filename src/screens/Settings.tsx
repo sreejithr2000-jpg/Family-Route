@@ -36,7 +36,7 @@ export function Settings() {
     say(r.ok, r.message);
   };
   const doPush = async () => { setBusy(true); const r = await push(); setBusy(false); say(r.ok, r.message); };
-  const doPull = async () => { setBusy(true); const r = await pull(); setBusy(false); say(r.ok, r.message); };
+  const doPull = async () => { setBusy(true); const r = await pull(true); setBusy(false); say(r.ok, r.message); };
   const disconnect = () => { store.setFamilyCode(""); setCode(""); say(true, "Disconnected from the shared family on this device."); };
 
   const copyTransferCode = async () => {

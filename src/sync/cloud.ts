@@ -85,6 +85,10 @@ export async function joinFamily(rawCode: string): Promise<SyncStatus> {
   }
 }
 
+// Tracks whether this device has local edits not yet pushed to the cloud, so a
+// download can never silently overwrite an un-uploaded change (e.g. a delete).
+let dirty = false;
+
 /** Push the local tree up to the shared family row. */
 export async function push(): Promise<SyncStatus> {
   const code = store.getFamilyCode();
@@ -104,6 +108,7 @@ export async function push(): Promise<SyncStatus> {
       },
     );
     if (!res.ok) return { ok: false, message: `Sync up failed (${res.status}).` };
+    dirty = false;
     store.setSyncedAt(Date.now());
     return { ok: true, message: "Saved to the cloud." };
   } catch {
@@ -111,8 +116,11 @@ export async function push(): Promise<SyncStatus> {
   }
 }
 
-/** Pull the latest shared tree down to this device. */
-export async function pull(): Promise<SyncStatus> {
+/**
+ * Pull the latest shared tree down. Automatic pulls (focus/startup) refuse to
+ * overwrite un-pushed local edits; an explicit Sync-down passes force=true.
+ */
+export async function pull(force = false): Promise<SyncStatus> {
   const code = store.getFamilyCode();
   if (!cloudEnabled() || !code) return { ok: false, message: "Not connected to a family." };
   try {
@@ -123,6 +131,8 @@ export async function pull(): Promise<SyncStatus> {
     if (!res.ok) return { ok: false, message: `Sync down failed (${res.status}).` };
     const rows = (await res.json()) as { data: unknown; family_name: string | null }[];
     if (rows.length === 0) return { ok: false, message: "This family no longer exists in the cloud." };
+    // Re-check dirty AFTER the round-trip: if we edited meanwhile, keep ours.
+    if (dirty && !force) return { ok: false, message: "Kept your unsaved local changes." };
     store.applySnapshot({ data: rows[0].data as never, familyName: rows[0].family_name ?? "" }, true);
     store.setSyncedAt(Date.now());
     return { ok: true, message: "Up to date." };
@@ -140,9 +150,13 @@ export function startAutoSync(): void {
   pull();
   store.onChange((local) => {
     if (!local) return; // ignore writes that came from a pull
+    dirty = true;
     clearTimeout(pushTimer);
-    pushTimer = setTimeout(() => push(), 1500);
+    pushTimer = setTimeout(() => push(), 1200);
   });
-  // catch others' edits when returning to the tab
-  window.addEventListener("focus", () => pull());
+  // Returning to the tab: push our pending edits first, otherwise refresh.
+  window.addEventListener("focus", () => {
+    if (dirty) push();
+    else pull();
+  });
 }
