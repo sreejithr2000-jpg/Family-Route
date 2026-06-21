@@ -81,11 +81,20 @@ export function Tree() {
       const cx = child.x + NODE_W / 2;
       const cy = child.y;
       const midY = (sy + cy) / 2;
-      const r = 10; // rounded elbow radius for a softer, garland-like line
-      const dir = cx >= sx ? 1 : -1;
-      const d =
-        `M ${sx} ${sy} L ${sx} ${midY - r} Q ${sx} ${midY} ${sx + dir * r} ${midY} ` +
-        `L ${cx - dir * r} ${midY} Q ${cx} ${midY} ${cx} ${midY + r} L ${cx} ${cy}`;
+
+      let d: string;
+      if (Math.abs(cx - sx) > NODE_W * 1.2) {
+        // Distant link (e.g. a married-in person to their faraway parents):
+        // a smooth S-curve so it never merges with the sibling brackets.
+        d = `M ${sx} ${sy} C ${sx} ${midY}, ${cx} ${midY}, ${cx} ${cy}`;
+      } else {
+        // Child sits under its parents → clean bracket that comes down distinctly.
+        const dir = cx >= sx ? 1 : -1;
+        const r = Math.min(10, Math.max(0, midY - sy - 1), Math.max(0, cy - midY - 1));
+        d =
+          `M ${sx} ${sy} L ${sx} ${midY - r} Q ${sx} ${midY} ${sx + dir * r} ${midY} ` +
+          `L ${cx - dir * r} ${midY} Q ${cx} ${midY} ${cx} ${midY + r} L ${cx} ${cy}`;
+      }
       out.push({ key: child.id, d, sx, sy, cx, cy });
     }
     return out;
