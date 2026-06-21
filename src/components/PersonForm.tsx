@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { Gender, Person } from "../data/types";
 import { store } from "../data/store";
-import { buildIndex, parents as parentsOf, spouses } from "../lib/graph";
+import { buildIndex, parents as parentsOf } from "../lib/graph";
 import { findDuplicates } from "../lib/people";
 import { PersonSelect } from "./PersonSelect";
 
@@ -19,11 +19,14 @@ export function PersonForm({
 
   // derive existing relationships for the edited person
   const existing = useMemo(() => {
-    if (!editing) return { p1: null as string | null, p2: null as string | null, sp: null as string | null };
+    if (!editing) return { p1: null as string | null, p2: null as string | null, sp: null as string | null, since: "" };
     const g = buildIndex(data.edges);
     const ps = parentsOf(g, editing.id);
-    const sp = spouses(g, editing.id).find((s) => s.status !== "former")?.id ?? null;
-    return { p1: ps[0] ?? null, p2: ps[1] ?? null, sp };
+    const spouseEdge = data.edges.find(
+      (e) => e.type === "spouse" && e.status !== "former" && (e.from === editing.id || e.to === editing.id),
+    );
+    const sp = spouseEdge ? (spouseEdge.from === editing.id ? spouseEdge.to : spouseEdge.from) : null;
+    return { p1: ps[0] ?? null, p2: ps[1] ?? null, sp, since: spouseEdge?.since ?? "" };
   }, [editing, data]);
 
   const [name, setName] = useState(editing?.name ?? "");
@@ -44,6 +47,7 @@ export function PersonForm({
   const [parent1, setParent1] = useState<string | null>(existing.p1);
   const [parent2, setParent2] = useState<string | null>(existing.p2);
   const [spouseId, setSpouseId] = useState<string | null>(existing.sp);
+  const [anniversary, setAnniversary] = useState(existing.since);
 
   const [error, setError] = useState("");
 
@@ -82,6 +86,7 @@ export function PersonForm({
     store.savePerson(person, {
       parentIds: [parent1, parent2].filter(Boolean) as string[],
       spouseId,
+      anniversary: spouseId ? anniversary || null : null,
     });
     onSaved();
   }
@@ -151,6 +156,12 @@ export function PersonForm({
             <PersonSelect label="Parent 2" people={people} value={parent2} onChange={setParent2} exclude={exclude} clearable placeholder="—" />
           </div>
           <PersonSelect label="Spouse" people={people} value={spouseId} onChange={setSpouseId} exclude={exclude} clearable placeholder="—" />
+          {spouseId && (
+            <label className="fld" style={{ marginTop: 12 }}>
+              <span>💐 Wedding anniversary <span className="muted">(optional)</span></span>
+              <input type="date" value={anniversary} onChange={(e) => setAnniversary(e.target.value)} />
+            </label>
+          )}
 
           <div className="fld-section">Household</div>
           <div className="fld-row">

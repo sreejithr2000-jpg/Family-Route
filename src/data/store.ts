@@ -83,6 +83,8 @@ function mutate(summary: string, fn: (d: FamilyData) => void): void {
 export interface RelationInput {
   parentIds: string[];
   spouseId: string | null;
+  /** marriage date (ISO) for the spouse edge — drives anniversaries */
+  anniversary?: string | null;
 }
 
 export const store = {
@@ -133,7 +135,14 @@ export const store = {
         (e) => !(e.type === "spouse" && e.status !== "former" && (e.from === id || e.to === id)),
       );
       if (rel.spouseId && rel.spouseId !== id) {
-        d.edges.push({ id: `e-${uid()}`, type: "spouse", from: rel.spouseId, to: id, status: "current" });
+        d.edges.push({
+          id: `e-${uid()}`,
+          type: "spouse",
+          from: rel.spouseId,
+          to: id,
+          status: "current",
+          since: rel.anniversary || undefined,
+        });
       }
     });
     return id;
