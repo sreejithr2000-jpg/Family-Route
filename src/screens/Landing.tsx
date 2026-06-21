@@ -33,7 +33,6 @@ export function Landing() {
             <a href="#features">What it does</a>
             <a href="#occasions">Occasions</a>
           </div>
-          <Link to={enterHref} className="btn btn-terracotta reveal d3">{enterLabel}</Link>
         </nav>
 
         <section className="hero">
