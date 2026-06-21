@@ -172,22 +172,45 @@ export function layoutFamily(
         desired.set(id, count ? sum / count : x.get(id)!);
       }
 
-      // pack in order of desired position, honouring min gaps (couples wider now)
-      const sorted = [...layer].sort((a, b) => desired.get(a)! - desired.get(b)!);
-      const pos = new Map<string, number>();
-      pos.set(sorted[0], desired.get(sorted[0])!);
-      for (let i = 1; i < sorted.length; i++) {
-        const married = spouses(g, sorted[i - 1]).some((s) => s.id === sorted[i]);
-        const minGap = NODE_W + (married ? SPOUSE_GAP : X_GAP);
-        pos.set(sorted[i], Math.max(desired.get(sorted[i])!, pos.get(sorted[i - 1])! + minGap));
+      // Group married couples into rigid units so nothing slips between them
+      // and they always move toward their children together.
+      const used = new Set<string>();
+      const units: string[][] = [];
+      for (const id of [...layer].sort((a, b) => desired.get(a)! - desired.get(b)!)) {
+        if (used.has(id)) continue;
+        const partner = spouses(g, id).find(
+          (s) => s.status !== "former" && desired.has(s.id) && !used.has(s.id),
+        );
+        if (partner) {
+          const pair = desired.get(id)! <= desired.get(partner.id)! ? [id, partner.id] : [partner.id, id];
+          units.push(pair);
+          used.add(id);
+          used.add(partner.id);
+        } else {
+          units.push([id]);
+          used.add(id);
+        }
       }
 
-      // re-centre the packed row on the average desired position so it doesn't
+      const unitCentre = (u: string[]) => u.reduce((s, id) => s + desired.get(id)!, 0) / u.length;
+      units.sort((a, b) => unitCentre(a) - unitCentre(b));
+
+      // pack units left-to-right; couples glued at SPOUSE_GAP, units at X_GAP
+      let prevRight = -Infinity;
+      for (const u of units) {
+        const width = u.length === 2 ? 2 * NODE_W + SPOUSE_GAP : NODE_W;
+        let x0 = unitCentre(u) - (width - NODE_W) / 2;
+        if (x0 < prevRight + X_GAP) x0 = prevRight + X_GAP;
+        u.forEach((id, i) => x.set(id, x0 + i * (NODE_W + SPOUSE_GAP)));
+        prevRight = x0 + width;
+      }
+
+      // re-centre the whole row on the average desired position so it doesn't
       // drift sideways (this is what kept stray couples far from everyone else)
       let shift = 0;
-      for (const id of sorted) shift += desired.get(id)! - pos.get(id)!;
-      shift /= sorted.length;
-      for (const id of sorted) x.set(id, pos.get(id)! + shift);
+      for (const id of layer) shift += desired.get(id)! - x.get(id)!;
+      shift /= layer.length;
+      for (const id of layer) x.set(id, x.get(id)! + shift);
     }
   }
 
