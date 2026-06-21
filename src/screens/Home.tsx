@@ -9,9 +9,9 @@ import { Toran } from "../components/Toran";
 export function Home() {
   const navigate = useNavigate();
   const egoId = store.getEgoId();
-  const me = useMemo(() => (egoId ? store.getPerson(egoId) : undefined), [egoId]);
-  const totalPeople = useMemo(() => store.getPeople().length, []);
-  const familyName = store.getFamilyName();
+  const data = useMemo(() => store.getData(), []);
+  const me = useMemo(() => data.people.find((p) => p.id === egoId), [data, egoId]);
+  const totalPeople = data.people.length;
   const isDemo = store.isDemo();
 
   if (!me) {
@@ -22,6 +22,13 @@ export function Home() {
 
   const age = ageOf(me);
   const justStarted = !isDemo && totalPeople <= 1;
+
+  // Banner name: prefer the household you assigned to yourself when adding
+  // members; fall back to the onboarding family name.
+  const myHousehold = me.householdId
+    ? data.households.find((h) => h.id === me.householdId)?.name
+    : undefined;
+  const familyName = myHousehold || store.getFamilyName();
 
   function switchPerson() {
     store.clearEgo();

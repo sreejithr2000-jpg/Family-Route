@@ -25,8 +25,10 @@ export interface TreeLayout {
 // Node + spacing geometry (px).
 export const NODE_W = 194;
 export const NODE_H = 104;
-const X_SPACING = NODE_W + 46;
-const Y_SPACING = NODE_H + 104;
+const X_GAP = 64; // breathing room between separate people in a row
+const SPOUSE_GAP = 20; // married couples sit close, like a tied knot
+const X_SPACING = NODE_W + X_GAP;
+const Y_SPACING = NODE_H + 128;
 
 /**
  * Layered family-tree layout, centred on `egoId`.
@@ -167,11 +169,15 @@ export function layoutFamily(
         }
         if (count) x.set(id, sum / count);
       }
-      // resolve overlaps left-to-right, preserving order
+      // resolve overlaps left-to-right; couples keep a tighter gap than others
       const sorted = [...layer].sort((a, b) => x.get(a)! - x.get(b)!);
       for (let i = 1; i < sorted.length; i++) {
-        const prev = x.get(sorted[i - 1])!;
-        if (x.get(sorted[i])! < prev + X_SPACING) x.set(sorted[i], prev + X_SPACING);
+        const prevId = sorted[i - 1];
+        const curId = sorted[i];
+        const married = spouses(g, prevId).some((s) => s.id === curId);
+        const minGap = NODE_W + (married ? SPOUSE_GAP : X_GAP);
+        const prev = x.get(prevId)!;
+        if (x.get(curId)! < prev + minGap) x.set(curId, prev + minGap);
       }
     }
   }
