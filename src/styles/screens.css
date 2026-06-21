@@ -603,7 +603,13 @@
 .welcome-form { text-align: left; }
 .welcome-form h1, .welcome-form .eyebrow, .welcome-form .lede { text-align: center; }
 .welcome-form .lede { margin-bottom: 24px; }
-.welcome-form .welcome-cta { justify-content: space-between; margin-top: 22px; }
+.welcome-form .welcome-cta { justify-content: center; margin-top: 22px; }
+.welcome-cta.spread { justify-content: space-between; }
+.link-btn {
+  background: none; border: none; color: var(--terracotta); font-weight: 600;
+  font-size: 0.9rem; padding: 2px 0; align-self: flex-start; text-decoration: underline;
+}
+.link-btn:hover { color: var(--laterite); }
 
 /* --- Demo banner + start hint --- */
 .demo-banner {

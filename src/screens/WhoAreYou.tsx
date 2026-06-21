@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { store } from "../data/store";
 import { avatarFor, subtitleFor } from "../lib/people";
 import { BrandMark } from "../components/BrandMark";
@@ -39,6 +39,12 @@ export function WhoAreYou() {
         <p className="sub reveal d2">
           Find your name below. The whole family will arrange itself around you.
         </p>
+
+        {store.isDemo() && (
+          <Link to="/start" className="demo-banner inline reveal d2">
+            ✦ This is a demo family — <b>set up your own&nbsp;→</b>
+          </Link>
+        )}
 
         <input
           className="search reveal d3"

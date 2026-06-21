@@ -12,6 +12,10 @@ const RELATIONS = [
 
 export function Landing() {
   const isDemo = store.isDemo();
+  const egoId = store.getEgoId();
+  // First-time visitors go to setup; returning family members go to their home.
+  const enterHref = isDemo ? "/start" : egoId ? "/home" : "/who";
+  const enterLabel = isDemo ? "Set up our family" : "Enter our home";
   return (
     <>
       <div className="kasavu-frame" />
@@ -29,7 +33,7 @@ export function Landing() {
             <a href="#features">What it does</a>
             <a href="#occasions">Occasions</a>
           </div>
-          <Link to="/who" className="btn btn-terracotta reveal d3">Enter our home</Link>
+          <Link to={enterHref} className="btn btn-terracotta reveal d3">{enterLabel}</Link>
         </nav>
 
         <section className="hero">
@@ -44,8 +48,8 @@ export function Landing() {
               birthday, and never forget a name at the wedding again.
             </p>
             <div className="hero-cta reveal d4">
-              <Link to="/start" className="btn btn-solid">Start our family</Link>
-              <Link to="/who" className="btn btn-ghost">Explore the demo</Link>
+              <Link to={enterHref} className="btn btn-solid">{enterLabel}</Link>
+              {isDemo && <Link to="/who" className="btn btn-ghost">Explore the demo</Link>}
             </div>
           </div>
 
@@ -110,7 +114,7 @@ export function Landing() {
             Built for our family, by our family — private, warm, and free. No passwords to
             remember, just pick your name and step inside.
           </p>
-          <Link to="/start" className="btn btn-terracotta">Start our family →</Link>
+          <Link to={enterHref} className="btn btn-terracotta">{enterLabel} →</Link>
         </section>
       </div>
 
