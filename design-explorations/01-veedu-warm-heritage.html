@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Family Routes — Veedu (Warm Heritage)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Mukta:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --cream:#FBF1DC;
+    --cream-2:#F4E4C5;
+    --terracotta:#C2562F;
+    --laterite:#9C3A22;
+    --leaf:#33522F;
+    --leaf-deep:#22381F;
+    --brass:#C2912F;
+    --brass-bright:#E0B851;
+    --ink:#37271B;
+    --ink-soft:#6a5340;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Mukta',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+  /* warm paper grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(194,86,47,.06), transparent 40%),
+      radial-gradient(circle at 85% 60%, rgba(51,82,47,.07), transparent 45%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
+
+  /* ---- Kasavu gold border frame ---- */
+  .frame{position:fixed;inset:14px;border:1.5px solid var(--brass);z-index:3;pointer-events:none}
+  .frame::after{content:"";position:absolute;inset:5px;border:1px solid rgba(194,145,47,.45)}
+
+  /* ---- Nav ---- */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:30px 0 10px}
+  .brand{display:flex;align-items:center;gap:13px;font-family:'Fraunces',serif;font-weight:900;font-size:1.35rem;letter-spacing:.3px}
+  .brand .lamp{width:26px;height:34px}
+  .navlinks{display:flex;gap:34px;font-weight:500;font-size:.95rem}
+  .navlinks a{color:var(--ink-soft);text-decoration:none;transition:.25s}
+  .navlinks a:hover{color:var(--terracotta)}
+  .cta{background:var(--terracotta);color:var(--cream);padding:11px 22px;border-radius:40px;font-weight:700;font-size:.9rem;text-decoration:none;box-shadow:0 6px 18px rgba(156,58,34,.28);transition:.25s}
+  .cta:hover{background:var(--laterite);transform:translateY(-2px)}
+  @media(max-width:760px){.navlinks{display:none}}
+
+  /* ---- Hero ---- */
+  .hero{position:relative;padding:70px 0 40px;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+  @media(max-width:900px){.hero{grid-template-columns:1fr;text-align:center}}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:.72rem;color:var(--laterite);background:rgba(194,145,47,.14);padding:7px 16px;border-radius:30px;border:1px solid rgba(194,145,47,.35)}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.9rem,6vw,4.7rem);line-height:1.02;letter-spacing:-.5px;margin:22px 0 0}
+  h1 em{font-style:italic;font-weight:500;color:var(--terracotta)}
+  .lede{font-size:1.12rem;color:var(--ink-soft);max-width:30em;margin:22px 0 32px}
+  @media(max-width:900px){.lede{margin-inline:auto}}
+  .hero-cta{display:flex;gap:16px;flex-wrap:wrap}
+  @media(max-width:900px){.hero-cta{justify-content:center}}
+  .btn-ghost{padding:13px 26px;border-radius:40px;border:1.5px solid var(--leaf);color:var(--leaf-deep);font-weight:700;text-decoration:none;transition:.25s}
+  .btn-ghost:hover{background:var(--leaf);color:var(--cream)}
+  .btn-solid{padding:14px 30px;border-radius:40px;background:var(--leaf-deep);color:var(--cream);font-weight:700;text-decoration:none;transition:.25s;box-shadow:0 8px 22px rgba(34,56,31,.3)}
+  .btn-solid:hover{transform:translateY(-2px)}
+
+  /* ---- Pookalam (floral rangoli) ---- */
+  .pookalam-wrap{display:flex;justify-content:center;position:relative}
+  .pookalam{width:min(420px,90%);height:auto;animation:spin 70s linear infinite;filter:drop-shadow(0 18px 30px rgba(156,58,34,.18))}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .pookalam-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-family:'Fraunces',serif}
+  .pookalam-center .big{font-size:2.4rem;font-weight:900;color:var(--laterite);line-height:1}
+  .pookalam-center .small{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);font-family:'Mukta'}
+
+  /* fade/stagger in */
+  .reveal{opacity:0;transform:translateY(22px);animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.2s}.d3{animation-delay:.35s}.d4{animation-delay:.5s}.d5{animation-delay:.62s}
+
+  /* ---- marquee strip (malayalam/tamil warmth) ---- */
+  .strip{margin-top:30px;border-top:1px solid rgba(194,145,47,.4);border-bottom:1px solid rgba(194,145,47,.4);overflow:hidden;background:rgba(244,228,197,.5)}
+  .strip-track{display:flex;gap:54px;white-space:nowrap;padding:14px 0;animation:scroll 26s linear infinite;font-family:'Fraunces',serif;font-style:italic;color:var(--leaf-deep);font-size:1.05rem}
+  .strip-track span{display:inline-flex;align-items:center;gap:54px}
+  .strip-track b{color:var(--brass);font-style:normal}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* ---- Features ---- */
+  .section{padding:90px 0 40px}
+  .sec-head{text-align:center;max-width:40em;margin:0 auto 54px}
+  .sec-head h2{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-.5px}
+  .sec-head p{color:var(--ink-soft);margin-top:12px;font-size:1.05rem}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px}
+  .card{background:linear-gradient(160deg,#fff8ea,#f6e8cb);border:1px solid rgba(194,145,47,.35);border-radius:18px;padding:30px 26px;position:relative;overflow:hidden;transition:.3s}
+  .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(55,39,27,.14)}
+  .card::before{content:"";position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(194,86,47,.18),transparent 70%)}
+  .ic{width:50px;height:50px;display:grid;place-items:center;border-radius:14px;background:var(--terracotta);color:var(--cream);font-size:1.4rem;margin-bottom:18px}
+  .card:nth-child(2) .ic{background:var(--leaf)}
+  .card:nth-child(3) .ic{background:var(--brass)}
+  .card:nth-child(4) .ic{background:var(--laterite)}
+  .card h3{font-family:'Fraunces',serif;font-size:1.32rem;font-weight:600;margin-bottom:9px}
+  .card p{color:var(--ink-soft);font-size:.97rem}
+
+  /* ---- closing band ---- */
+  .closing{margin:70px 0 40px;background:var(--leaf-deep);color:var(--cream-2);border-radius:26px;padding:64px 40px;text-align:center;position:relative;overflow:hidden}
+  .closing::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='4' cy='4' r='1.4' fill='%23C2912F' opacity='.5'/%3E%3C/svg%3E");opacity:.4}
+  .closing h2{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.2rem);font-weight:900;position:relative}
+  .closing p{position:relative;max-width:34em;margin:16px auto 30px;opacity:.85}
+  .closing .cta{background:var(--brass);color:var(--ink);box-shadow:none;position:relative}
+  .closing .cta:hover{background:var(--brass-bright)}
+
+  footer{padding:40px 0 60px;text-align:center;color:var(--ink-soft);font-size:.9rem}
+  footer .brand{justify-content:center;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="frame"></div>
+
+<!-- brass lamp icon reused -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="nilavilakku" viewBox="0 0 26 34">
+    <path d="M13 1l2 3-2 2-2-2z" fill="#C2912F"/>
+    <path d="M9 7h8l-1.5 3h-5z" fill="#C2912F"/>
+    <ellipse cx="13" cy="13" rx="8" ry="3.4" fill="#9C3A22"/>
+    <path d="M5 13c1 3 3 4 8 4s7-1 8-4" fill="none" stroke="#C2912F" stroke-width="1.4"/>
+    <rect x="12" y="16" width="2" height="11" fill="#C2912F"/>
+    <path d="M6 33c0-4 3-6 7-6s7 2 7 6z" fill="#C2912F"/>
+    <circle cx="13" cy="11" r="2.2" fill="#F4A300"/>
+  </symbol>
+</defs></svg>
+
+<div class="wrap">
+  <nav>
+    <div class="brand reveal d1"><svg class="lamp"><use href="#nilavilakku"/></svg> Family&nbsp;Routes</div>
+    <div class="navlinks reveal d2">
+      <a href="#tree">The Tree</a>
+      <a href="#features">What it does</a>
+      <a href="#events">Occasions</a>
+    </div>
+    <a href="#" class="cta reveal d3">Enter our home</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <span class="eyebrow reveal d1">◈ Oru kudumbam, oru veedu — one family, one home</span>
+      <h1 class="reveal d2">Every <em>root</em>,<br>every <em>route</em>,<br>back to family.</h1>
+      <p class="lede reveal d3">From a Kerala <i>tharavadu</i> with Tamil Nadu roots — Family Routes gathers everyone under one roof. See how you’re related to anyone, remember every birthday, and never forget a name at the wedding again.</p>
+      <div class="hero-cta reveal d4">
+        <a href="#" class="btn-solid">Open the family tree</a>
+        <a href="#features" class="btn-ghost">See how it works</a>
+      </div>
+    </div>
+    <div class="pookalam-wrap reveal d4">
+      <!-- Pookalam: concentric flower rings -->
+      <svg class="pookalam" viewBox="0 0 400 400">
+        <g transform="translate(200,200)">
+          <circle r="190" fill="none" stroke="#C2912F" stroke-width="1" opacity=".4"/>
+          <!-- outer petals -->
+          <g>
+            <!-- generate petals -->
+          </g>
+          <circle r="160" fill="#9C3A22" opacity=".12"/>
+          <g id="ring-a"></g>
+          <circle r="120" fill="#33522F" opacity=".14"/>
+          <g id="ring-b"></g>
+          <circle r="86" fill="#C2562F" opacity=".9"/>
+          <circle r="86" fill="none" stroke="#F4E4C5" stroke-width="3"/>
+          <circle r="58" fill="#E0B851"/>
+          <circle r="34" fill="#9C3A22"/>
+          <circle r="14" fill="#F4A300"/>
+        </g>
+      </svg>
+      <div class="pookalam-center">
+        <div class="big">കുടുംബം</div>
+        <div class="small">kudumbam · family</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Marquee -->
+<div class="strip reveal d5">
+  <div class="strip-track">
+    <span>Amma <b>◈</b> Achan <b>◈</b> Ammamma <b>◈</b> Periyappa <b>◈</b> Chithappa <b>◈</b> Maama <b>◈</b> Athai <b>◈</b> Cheriyamma <b>◈</b> Valyamma <b>◈</b> </span>
+    <span>Amma <b>◈</b> Achan <b>◈</b> Ammamma <b>◈</b> Periyappa <b>◈</b> Chithappa <b>◈</b> Maama <b>◈</b> Athai <b>◈</b> Cheriyamma <b>◈</b> Valyamma <b>◈</b> </span>
+  </div>
+</div>
+
+<div class="wrap">
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="sec-head">
+      <h2>A home that remembers everyone</h2>
+      <p>Add a person, point to their parents and partner, and the whole family arranges itself — the way the old folks could recite it from memory.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="ic">⌖</div><h3>Living family tree</h3><p>Pick your name and the tree blooms around you — parents, cousins, in-laws, all in their rightful place.</p></div>
+      <div class="card"><div class="ic">⟡</div><h3>“How am I related?”</h3><p>Tap any two people. We’ll tell you plainly — your father’s younger brother, your maternal aunt — side and seniority and all.</p></div>
+      <div class="card"><div class="ic">✉</div><h3>Wedding invite lists</h3><p>Choose the occasion, set a headcount, and we suggest who to call — closest family first, ready to share on WhatsApp.</p></div>
+      <div class="card"><div class="ic">✿</div><h3>Birthdays & anniversaries</h3><p>See who’s celebrating next and how old they’re turning — so the phone call always comes on time.</p></div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+  <section class="closing" id="events">
+    <h2>Light the lamp. Gather everyone.</h2>
+    <p>Built for our family, by our family — private, warm, and free. No passwords to remember, just pick your name and step inside.</p>
+    <a href="#" class="cta">Enter our home →</a>
+  </section>
+</div>
+
+<footer>
+  <div class="brand"><svg class="lamp" width="22" height="28"><use href="#nilavilakku"/></svg> Family Routes</div>
+  <div>Made with love, turmeric & a little nostalgia · Kerala × Tamil Nadu</div>
+</footer>
+
+<script>
+  // build pookalam petal rings procedurally for a richer floral look
+  const svgns="http://www.w3.org/2000/svg";
+  function ring(id,count,r,len,wid,fill,rot=0){
+    const g=document.getElementById(id);
+    for(let i=0;i<count;i++){
+      const a=(i/count)*360+rot;
+      const p=document.createElementNS(svgns,"ellipse");
+      p.setAttribute("cx",0);p.setAttribute("cy",-r);
+      p.setAttribute("rx",wid);p.setAttribute("ry",len);
+      p.setAttribute("fill",fill);
+      p.setAttribute("transform",`rotate(${a})`);
+      g.appendChild(p);
+    }
+  }
+  ring("ring-a",24,150,26,9,"#E0B851");
+  ring("ring-a",24,150,18,6,"#9C3A22",7.5);
+  ring("ring-b",18,108,22,11,"#3b6b34");
+  ring("ring-b",18,108,15,7,"#F4A300",10);
+</script>
+</body>
+</html>

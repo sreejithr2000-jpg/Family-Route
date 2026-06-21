@@ -1,0 +1,107 @@
+@import "./tokens.css";
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Warm paper grain + subtle colour bloom (from A), kept faint (C restraint) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background:
+    radial-gradient(circle at 18% 28%, rgba(194, 86, 47, 0.05), transparent 42%),
+    radial-gradient(circle at 86% 62%, rgba(51, 82, 47, 0.06), transparent 46%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+a { color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+img, svg { display: block; }
+
+/* --- shared layout --- */
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; position: relative; z-index: 2; }
+
+/* Kasavu gold border frame (A signature) */
+.kasavu-frame {
+  position: fixed;
+  inset: var(--frame-inset);
+  border: 1.5px solid var(--brass);
+  z-index: 50;
+  pointer-events: none;
+}
+.kasavu-frame::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(194, 145, 47, 0.45);
+}
+
+/* thin engraved rule (C) */
+.rule { height: 1px; background: var(--line); border: 0; }
+.rule-v { width: 1px; background: var(--line); }
+
+/* --- buttons --- */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--font-body); font-weight: 700; font-size: 0.95rem;
+  text-decoration: none; border: none; transition: 0.25s ease;
+}
+.btn-solid {
+  background: var(--leaf-deep); color: var(--cream);
+  padding: 14px 30px; border-radius: var(--radius-pill);
+  box-shadow: 0 8px 22px rgba(34, 56, 31, 0.3);
+}
+.btn-solid:hover { transform: translateY(-2px); }
+.btn-terracotta {
+  background: var(--terracotta); color: var(--cream);
+  padding: 12px 26px; border-radius: var(--radius-pill);
+  box-shadow: 0 6px 18px rgba(156, 58, 34, 0.28);
+}
+.btn-terracotta:hover { background: var(--laterite); transform: translateY(-2px); }
+.btn-ghost {
+  padding: 13px 26px; border-radius: var(--radius-pill);
+  border: 1.5px solid var(--leaf); color: var(--leaf-deep); background: transparent;
+}
+.btn-ghost:hover { background: var(--leaf); color: var(--cream); }
+
+/* editorial eyebrow */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  font-size: 0.72rem; color: var(--laterite);
+  background: rgba(194, 145, 47, 0.14);
+  padding: 7px 16px; border-radius: 30px;
+  border: 1px solid rgba(194, 145, 47, 0.35);
+}
+
+/* Malayalam margin label (C touch) */
+.ml-label {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  color: var(--leaf);
+  letter-spacing: 0.02em;
+}
+
+/* --- entrance animation --- */
+.reveal { opacity: 0; transform: translateY(20px); animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+.d1 { animation-delay: 0.05s; } .d2 { animation-delay: 0.18s; }
+.d3 { animation-delay: 0.32s; } .d4 { animation-delay: 0.46s; } .d5 { animation-delay: 0.6s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none; opacity: 1; transform: none; }
+  * { animation-duration: 0.001s !important; }
+}

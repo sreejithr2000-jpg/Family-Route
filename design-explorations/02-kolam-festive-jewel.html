@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Family Routes — Kolam (Festive Jewel)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --night:#22102E;          /* deep aubergine night */
+    --night-2:#160A20;
+    --maroon:#5A1230;
+    --marigold:#F4A300;
+    --marigold-2:#FF7A1A;
+    --peacock:#15A39A;
+    --magenta:#E0457B;
+    --gold:#EAC557;
+    --cream:#F8ECCF;
+    --cream-soft:#cdbfa6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Mukta',sans-serif;
+    background:var(--night);
+    color:var(--cream);
+    overflow-x:hidden;line-height:1.6;
+  }
+  /* deep festive backdrop: radial glows + kolam dot grid */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(circle at 15% 12%, rgba(224,69,123,.28), transparent 38%),
+      radial-gradient(circle at 88% 18%, rgba(244,163,0,.24), transparent 40%),
+      radial-gradient(circle at 50% 110%, rgba(21,163,154,.30), transparent 55%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:radial-gradient(rgba(234,197,87,.35) 1.2px, transparent 1.3px);
+    background-size:30px 30px;
+    mask-image:radial-gradient(circle at 50% 40%, #000 60%, transparent 100%);
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
+
+  /* torana (door hanging) top border */
+  .torana{position:fixed;top:0;left:0;right:0;height:26px;z-index:5;
+    background:repeating-linear-gradient(90deg,var(--marigold) 0 14px,var(--peacock) 14px 28px,var(--magenta) 28px 42px,var(--gold) 42px 56px);
+    box-shadow:0 2px 10px rgba(0,0,0,.4)}
+  .torana::after{content:"";position:absolute;top:26px;left:0;right:0;height:18px;
+    background:radial-gradient(circle at 14px -2px, var(--gold) 8px, transparent 9px) 0 0/28px 18px repeat-x;
+    filter:drop-shadow(0 3px 2px rgba(0,0,0,.3))}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:64px 0 10px}
+  .brand{display:flex;align-items:center;gap:12px;font-family:'Rozha One',serif;font-size:1.5rem;color:var(--gold)}
+  .brand .dot{width:30px;height:30px;border-radius:50%;background:
+    radial-gradient(circle,var(--marigold) 30%,transparent 32%),
+    conic-gradient(var(--magenta),var(--peacock),var(--marigold),var(--magenta));
+    box-shadow:0 0 16px rgba(244,163,0,.6)}
+  .navlinks{display:flex;gap:32px;font-weight:500}
+  .navlinks a{color:var(--cream-soft);text-decoration:none;transition:.25s}
+  .navlinks a:hover{color:var(--marigold)}
+  .cta{background:linear-gradient(135deg,var(--marigold),var(--marigold-2));color:#3a1500;padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(244,122,26,.4);transition:.25s}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(244,122,26,.6)}
+  @media(max-width:760px){.navlinks{display:none}}
+
+  /* HERO */
+  .hero{text-align:center;padding:60px 0 30px;position:relative}
+  .eyebrow{display:inline-block;font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:.72rem;color:var(--marigold);border:1px solid rgba(244,163,0,.4);padding:8px 20px;border-radius:30px;background:rgba(244,163,0,.08)}
+  h1{font-family:'Rozha One',serif;font-weight:400;font-size:clamp(3rem,8vw,6.4rem);line-height:.98;margin:26px 0 0;letter-spacing:-.5px}
+  h1 .glow{color:var(--marigold);text-shadow:0 0 40px rgba(244,163,0,.5)}
+  h1 .peacock{color:var(--peacock)}
+  h1 .mag{color:var(--magenta)}
+  .lede{font-size:1.18rem;color:var(--cream-soft);max-width:34em;margin:26px auto 36px}
+  .hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .btn-ghost{padding:14px 28px;border-radius:8px;border:1.5px solid var(--peacock);color:var(--peacock);font-weight:700;text-decoration:none;transition:.25s}
+  .btn-ghost:hover{background:var(--peacock);color:var(--night)}
+
+  /* central kolam mandala */
+  .kolam-stage{position:relative;display:flex;justify-content:center;margin:46px 0 10px}
+  .kolam{width:min(540px,94%);height:auto;filter:drop-shadow(0 0 50px rgba(234,197,87,.25))}
+  .kolam .rot{transform-origin:300px 300px;animation:spin 60s linear infinite}
+  .kolam .rot.rev{animation-direction:reverse;animation-duration:90s}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-family:'Rozha One',serif}
+  .badge .ml{font-size:2.6rem;color:var(--gold);line-height:1;text-shadow:0 0 24px rgba(234,197,87,.5)}
+  .badge .en{font-family:'Mukta';font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--cream-soft);margin-top:6px}
+
+  .reveal{opacity:0;transform:translateY(24px);animation:rise 1s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.18s}.d3{animation-delay:.32s}.d4{animation-delay:.46s}.d5{animation-delay:.6s}
+
+  /* FEATURES */
+  .section{padding:90px 0 30px}
+  .sec-head{text-align:center;max-width:40em;margin:0 auto 56px}
+  .sec-head h2{font-family:'Rozha One',serif;font-size:clamp(2.2rem,4.5vw,3.4rem)}
+  .sec-head h2 span{color:var(--magenta)}
+  .sec-head p{color:var(--cream-soft);margin-top:12px;font-size:1.06rem}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
+  .card{background:linear-gradient(160deg,rgba(90,18,48,.55),rgba(34,16,46,.7));border:1px solid rgba(234,197,87,.28);border-radius:16px;padding:30px 26px;position:relative;overflow:hidden;backdrop-filter:blur(4px);transition:.3s}
+  .card:hover{transform:translateY(-6px);border-color:var(--marigold);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+  .card .ic{width:54px;height:54px;display:grid;place-items:center;border-radius:14px;font-size:1.5rem;margin-bottom:18px;background:var(--marigold);color:#3a1500}
+  .card:nth-child(2) .ic{background:var(--peacock);color:#06251f}
+  .card:nth-child(3) .ic{background:var(--magenta);color:#fff}
+  .card:nth-child(4) .ic{background:var(--gold);color:#3a2a00}
+  .card h3{font-family:'Rozha One',serif;font-size:1.4rem;margin-bottom:9px;color:var(--cream)}
+  .card p{color:var(--cream-soft);font-size:.96rem}
+  .card .corner{position:absolute;bottom:-18px;right:-18px;width:80px;height:80px;border-radius:50%;background:conic-gradient(from 0deg,var(--magenta),var(--peacock),var(--marigold),var(--magenta));opacity:.18}
+
+  /* stat band */
+  .stats{display:flex;flex-wrap:wrap;justify-content:center;gap:50px;margin:70px 0;padding:40px;border-radius:20px;background:linear-gradient(90deg,rgba(21,163,154,.14),rgba(224,69,123,.14));border:1px solid rgba(234,197,87,.25);text-align:center}
+  .stat .n{font-family:'Rozha One',serif;font-size:2.8rem;color:var(--marigold)}
+  .stat .l{color:var(--cream-soft);font-size:.92rem;letter-spacing:.05em}
+
+  .closing{margin:60px 0 40px;text-align:center;padding:70px 30px;border-radius:24px;position:relative;overflow:hidden;
+    background:radial-gradient(circle at 50% 0%, rgba(244,163,0,.22), transparent 60%), var(--maroon);
+    border:1px solid rgba(234,197,87,.3)}
+  .closing h2{font-family:'Rozha One',serif;font-size:clamp(2.2rem,5vw,3.6rem);color:var(--cream)}
+  .closing p{color:var(--cream-soft);max-width:34em;margin:16px auto 30px}
+
+  footer{padding:40px 0 60px;text-align:center;color:var(--cream-soft);font-size:.9rem}
+  footer .brand{justify-content:center;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="torana"></div>
+<div class="wrap">
+  <nav>
+    <div class="brand reveal d1"><span class="dot"></span> Family Routes</div>
+    <div class="navlinks reveal d2">
+      <a href="#features">Features</a>
+      <a href="#events">Occasions</a>
+      <a href="#">The Tree</a>
+    </div>
+    <a href="#" class="cta reveal d3">Pick your name</a>
+  </nav>
+
+  <section class="hero">
+    <span class="eyebrow reveal d1">✦ Kerala roots · Tamil Nadu soul ✦</span>
+    <h1 class="reveal d2">One <span class="glow">family</span>,<br>a thousand <span class="peacock">threads</span>,<br>every <span class="mag">knot</span> drawn.</h1>
+    <p class="lede reveal d3">Like a kolam at the doorstep — every dot a person, every line a relation. Family Routes draws your whole family into one bright, welcoming pattern.</p>
+    <div class="hero-cta reveal d4">
+      <a href="#" class="cta">Enter the family</a>
+      <a href="#features" class="btn-ghost">See the magic</a>
+    </div>
+
+    <div class="kolam-stage reveal d4">
+      <svg class="kolam" viewBox="0 0 600 600">
+        <g class="rot">
+          <g id="petals-outer"></g>
+        </g>
+        <g class="rot rev">
+          <g id="petals-mid"></g>
+        </g>
+        <g id="dots-grid"></g>
+        <circle cx="300" cy="300" r="92" fill="#5A1230" stroke="#EAC557" stroke-width="2"/>
+        <circle cx="300" cy="300" r="64" fill="none" stroke="#15A39A" stroke-width="3" stroke-dasharray="6 8"/>
+      </svg>
+      <div class="badge">
+        <div class="ml">കോലം</div>
+        <div class="en">kolam · welcome</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+  <section class="section" id="features">
+    <div class="sec-head">
+      <h2>Draw your family in <span>full colour</span></h2>
+      <p>Add a person, name their parents and partner, and watch the pattern complete itself.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="ic">⌖</div><h3>Living tree</h3><p>Choose your name; the whole family fans out around you, generation by generation.</p><div class="corner"></div></div>
+      <div class="card"><div class="ic">⟡</div><h3>Relation finder</h3><p>Any two names, one clear answer — maternal or paternal, elder or younger, in-law or blood.</p><div class="corner"></div></div>
+      <div class="card"><div class="ic">✉</div><h3>Invite lists</h3><p>Weddings, housewarmings, naming days — get a guest list by closeness, capped to your hall.</p><div class="corner"></div></div>
+      <div class="card"><div class="ic">✿</div><h3>Celebrations</h3><p>The next birthdays and anniversaries, with ages — so no wish is ever late.</p><div class="corner"></div></div>
+    </div>
+  </section>
+
+  <div class="stats reveal">
+    <div class="stat"><div class="n">2</div><div class="l">links to know a whole family</div></div>
+    <div class="stat"><div class="n">1,000+</div><div class="l">relatives, one tree</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">passwords to remember</div></div>
+  </div>
+
+  <section class="closing" id="events">
+    <h2>The doorstep is drawn. Come in.</h2>
+    <p>Private and free, made only for our family. Pick your name and the kolam lights up around you.</p>
+    <a href="#" class="cta">Pick your name →</a>
+  </section>
+</div>
+
+<footer>
+  <div class="brand"><span class="dot" style="width:22px;height:22px"></span> Family Routes</div>
+  <div>Strung together with marigolds & memory · Kerala × Tamil Nadu</div>
+</footer>
+
+<script>
+  const svgns="http://www.w3.org/2000/svg";
+  const cx=300,cy=300;
+  function petalRing(id,count,r,len,wid,fill,rot=0){
+    const g=document.getElementById(id);
+    for(let i=0;i<count;i++){
+      const a=(i/count)*360+rot;
+      const p=document.createElementNS(svgns,"path");
+      // teardrop petal
+      p.setAttribute("d",`M${cx} ${cy-r} q ${wid} ${len*0.4} 0 ${len} q ${-wid} ${-len*0.6} 0 ${-len} z`);
+      p.setAttribute("fill",fill);
+      p.setAttribute("transform",`rotate(${a} ${cx} ${cy})`);
+      p.setAttribute("opacity",".9");
+      g.appendChild(p);
+    }
+  }
+  petalRing("petals-outer",24,250,70,16,"#E0457B");
+  petalRing("petals-outer",24,250,46,10,"#F4A300",7.5);
+  petalRing("petals-mid",16,170,58,18,"#15A39A");
+  petalRing("petals-mid",16,170,38,11,"#EAC557",11.25);
+
+  // kolam dot grid (diamond arrangement)
+  const dg=document.getElementById("dots-grid");
+  const rows=[1,2,3,2,1];
+  // draw a diamond of small dots around center ring
+  for(let ang=0;ang<360;ang+=30){
+    const rr=120;
+    const x=cx+rr*Math.cos(ang*Math.PI/180);
+    const y=cy+rr*Math.sin(ang*Math.PI/180);
+    const c=document.createElementNS(svgns,"circle");
+    c.setAttribute("cx",x);c.setAttribute("cy",y);c.setAttribute("r",3.4);
+    c.setAttribute("fill","#EAC557");
+    dg.appendChild(c);
+  }
+</script>
+</body>
+</html>

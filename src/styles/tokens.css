@@ -1,0 +1,41 @@
+/*
+  Family Routes — design tokens
+  Base aesthetic: "Veedu" warm heritage (Option A)
+  Refined with: "Ola" archival minimal (Option C) — thin brass rules,
+  editorial whitespace, Cormorant Garamond headings, Malayalam margin labels.
+*/
+:root {
+  /* --- Warm heritage palette (A) --- */
+  --cream: #fbf1dc;
+  --cream-2: #f4e4c5;
+  --cream-card: #fff8ea;
+  --terracotta: #c2562f;
+  --laterite: #9c3a22;
+  --leaf: #33522f;
+  --leaf-deep: #22381f;
+  --brass: #c2912f;
+  --brass-bright: #e0b851;
+  --gold-flame: #f4a300;
+  --ink: #37271b;
+  --ink-soft: #6a5340;
+  --ink-faint: #9c8568;
+
+  /* --- Refinement layer (C) --- */
+  --line: #d8c39a;            /* thin engraved rule */
+  --line-soft: #e6d8b8;
+  --accent: var(--brass);
+
+  /* --- Typography --- */
+  --font-display: "Fraunces", Georgia, serif;        /* warm, characterful (A) */
+  --font-editorial: "Cormorant Garamond", serif;     /* refined headings (C) */
+  --font-body: "Mukta", system-ui, sans-serif;       /* clean UI/body */
+
+  /* --- Spacing / shape --- */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-pill: 40px;
+  --shadow-soft: 0 14px 38px rgba(55, 39, 27, 0.14);
+  --shadow-lift: 0 18px 44px rgba(55, 39, 27, 0.2);
+  --maxw: 1180px;
+  --frame-inset: 14px;
+}
