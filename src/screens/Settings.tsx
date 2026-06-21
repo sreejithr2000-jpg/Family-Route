@@ -126,7 +126,7 @@ export function Settings() {
                 <button className="btn btn-solid" disabled={busy} onClick={doCreate}>Create shared family</button>
               </div>
               <div className="join-row">
-                <input value={joinCode} onChange={(e) => setJoinCode(e.target.value)} placeholder="Have a code? e.g. K7M2QX" />
+                <input value={joinCode} onChange={(e) => setJoinCode(e.target.value)} placeholder="Have a code? e.g. K7M2QXAB" />
                 <button className="btn btn-ghost" disabled={busy} onClick={doJoin}>Join with a code</button>
               </div>
             </>

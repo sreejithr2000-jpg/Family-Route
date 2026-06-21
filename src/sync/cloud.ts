@@ -19,11 +19,19 @@ function headers(): HeadersInit {
   };
 }
 
-/** Friendly random code, avoiding ambiguous characters (no 0/O/1/I). */
+/**
+ * A friendly but unguessable family code. The code is the shared secret that
+ * grants access to the family's cloud data, so it must be cryptographically
+ * random with enough entropy to resist enumeration. 8 chars over a 32-symbol
+ * alphabet = 40 bits (~1.1 trillion). The 32-char alphabet divides 256 evenly,
+ * so `byte % 32` is unbiased. Pair with Supabase RLS/rate-limiting server-side.
+ */
 export function makeCode(): string {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no ambiguous 0/O/1/I
+  const buf = new Uint8Array(8);
+  crypto.getRandomValues(buf);
   let c = "";
-  for (let i = 0; i < 6; i++) c += alphabet[Math.floor(Math.random() * alphabet.length)];
+  for (const b of buf) c += alphabet[b % alphabet.length];
   return c;
 }
 
