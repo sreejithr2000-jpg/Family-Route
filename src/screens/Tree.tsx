@@ -10,6 +10,17 @@ import { BrandMark } from "../components/BrandMark";
 
 type SideFilter = "all" | "paternal" | "maternal";
 
+/** A small, muted lotus — a gentle, respectful mark for someone who has passed. */
+function MemorialLotus() {
+  return (
+    <svg viewBox="0 0 24 18" aria-hidden="true">
+      <path d="M12 1 C 10 7, 10 12, 12 17 C 14 12, 14 7, 12 1 Z" fill="#b58a4e" />
+      <path d="M12 17 C 7 14, 4 10, 4 5 C 8.5 6, 11 11, 12 17 Z" fill="#cda877" />
+      <path d="M12 17 C 17 14, 20 10, 20 5 C 15.5 6, 13 11, 12 17 Z" fill="#cda877" />
+    </svg>
+  );
+}
+
 /** A little marigold flower used as a spouse "knot" — festive, like a garland. */
 function KnotFlower({ x, y }: { x: number; y: number }) {
   return (
@@ -304,7 +315,14 @@ export function Tree() {
                   if (!drag.current.moved) setSelected(n.id);
                 }}
               >
-                <span className="ava">{avatarFor(person)}</span>
+                <span className="ava">
+                  {avatarFor(person)}
+                  {person.isDeceased && (
+                    <span className="memorial" title="In loving memory">
+                      <MemorialLotus />
+                    </span>
+                  )}
+                </span>
                 <span className="who">
                   <span className="nm">{person.name}</span>
                   <span className="mt">

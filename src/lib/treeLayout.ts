@@ -23,8 +23,8 @@ export interface TreeLayout {
 }
 
 // Node + spacing geometry (px).
-export const NODE_W = 168;
-export const NODE_H = 96;
+export const NODE_W = 194;
+export const NODE_H = 104;
 const X_SPACING = NODE_W + 46;
 const Y_SPACING = NODE_H + 104;
 

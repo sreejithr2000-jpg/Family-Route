@@ -192,8 +192,21 @@
 .tree-node.g-male .ava { border-color: #4f7a45; }
 .tree-node.g-female .ava { border-color: #d57a52; }
 .tree-node .who { display: flex; flex-direction: column; overflow: hidden; }
-.tree-node .nm { font-weight: 600; font-size: 0.98rem; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tree-node .mt { color: var(--ink-soft); font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tree-node .nm {
+  font-weight: 600; font-size: 0.95rem; line-height: 1.15;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; word-break: break-word;
+}
+.tree-node .mt { color: var(--ink-soft); font-size: 0.76rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+
+/* deceased: a small, respectful lotus marker on the avatar corner */
+.tree-node .ava { position: relative; }
+.tree-node .memorial {
+  position: absolute; right: -3px; bottom: -3px; width: 16px; height: 16px;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--cream); box-shadow: 0 1px 2px rgba(55, 39, 27, 0.25);
+}
+.tree-node .memorial svg { width: 13px; height: 11px; opacity: 0.85; }
 .tree-node.ego { border-color: var(--terracotta); background: linear-gradient(160deg, #fff8ea, #f7e3c4); box-shadow: 0 0 0 3px rgba(194, 86, 47, 0.18), var(--shadow-soft); }
 .tree-node.selected { border-color: var(--brass); box-shadow: 0 0 0 3px rgba(194, 145, 47, 0.25), var(--shadow-soft); }
 .tree-node .you-tag {
