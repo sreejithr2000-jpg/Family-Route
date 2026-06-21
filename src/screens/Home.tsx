@@ -51,7 +51,10 @@ export function Home() {
               ↺ {t("home.switch", { name: me.name.split(" ")[0] })}
             </button>
           </div>
-          <LanguageSwitcher />
+          <div className="home-right">
+            <LanguageSwitcher />
+            <Link to="/settings" className="home-switch settings-gear" title="Settings">⚙</Link>
+          </div>
         </div>
 
         {isDemo && (

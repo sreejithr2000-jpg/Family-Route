@@ -94,9 +94,10 @@ export function Welcome() {
             </p>
             <div className="welcome-cta">
               <button className="btn btn-solid" onClick={() => setStep("you")}>Set up my family</button>
-              <Link to="/who" className="btn btn-ghost">Keep exploring the demo</Link>
+              <Link to="/settings" className="btn btn-ghost">Join an existing family</Link>
             </div>
-            <p className="welcome-note">Starting fresh clears the demo from this device. Your tree stays private to this browser.</p>
+            <Link to="/who" className="welcome-text-link">…or keep exploring the demo</Link>
+            <p className="welcome-note">Already set up your family on another device? Choose “Join an existing family” and use your family code.</p>
           </div>
         )}
 

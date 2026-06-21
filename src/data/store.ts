@@ -12,6 +12,8 @@ const UNDO_KEY = "family-routes:undo:v1";
 const UNDO_LIMIT = 25;
 const DEMO_KEY = "family-routes:demo:v1"; // "false" once the user starts their own
 const FAMILY_NAME_KEY = "family-routes:familyName:v1";
+const CODE_KEY = "family-routes:code:v1"; // shared family code for cloud sync
+const SYNC_AT_KEY = "family-routes:syncedAt:v1";
 
 export interface AuditEntry {
   id: string;
@@ -39,8 +41,15 @@ function load(): FamilyData {
   }
 }
 
+// Listeners notified after any local data write (used by the sync layer).
+const changeListeners = new Set<(local: boolean) => void>();
+let applyingRemote = false;
+
 function saveData(data: FamilyData): void {
   localStorage.setItem(DATA_KEY, JSON.stringify(data));
+  // `local` is false when we're writing data pulled from the cloud, so the
+  // sync layer can avoid immediately pushing it straight back.
+  for (const cb of changeListeners) cb(!applyingRemote);
 }
 
 function readJson<T>(key: string, fallback: T): T {
@@ -187,7 +196,64 @@ export const store = {
     localStorage.removeItem(AUDIT_KEY);
     localStorage.removeItem(DEMO_KEY);
     localStorage.removeItem(FAMILY_NAME_KEY);
+    localStorage.removeItem(CODE_KEY);
+    localStorage.removeItem(SYNC_AT_KEY);
     this.clearEgo();
+  },
+
+  // --- sync plumbing ---
+
+  /** Subscribe to local data changes. Returns an unsubscribe fn. */
+  onChange(cb: (local: boolean) => void): () => void {
+    changeListeners.add(cb);
+    return () => changeListeners.delete(cb);
+  },
+
+  /** A portable snapshot of the whole family (for cloud or offline transfer). */
+  exportSnapshot(): { data: FamilyData; familyName: string } {
+    return { data: load(), familyName: this.getFamilyName() };
+  },
+
+  /** Replace everything from a snapshot (from cloud pull or an imported code). */
+  applySnapshot(snap: { data: FamilyData; familyName?: string }, fromRemote = false): void {
+    applyingRemote = fromRemote;
+    saveData(snap.data);
+    applyingRemote = false;
+    if (snap.familyName !== undefined) this.setFamilyName(snap.familyName);
+    localStorage.setItem(DEMO_KEY, "false");
+    localStorage.removeItem(UNDO_KEY);
+  },
+
+  /** A long base64url code carrying the whole family — for offline transfer. */
+  exportCode(): string {
+    const json = JSON.stringify(this.exportSnapshot());
+    return btoa(unescape(encodeURIComponent(json))).replace(/\+/g, "-").replace(/\//g, "_");
+  },
+  importCode(code: string): boolean {
+    try {
+      const json = decodeURIComponent(escape(atob(code.trim().replace(/-/g, "+").replace(/_/g, "/"))));
+      const snap = JSON.parse(json) as { data: FamilyData; familyName?: string };
+      if (!snap.data || !Array.isArray(snap.data.people)) return false;
+      this.applySnapshot(snap);
+      this.clearEgo();
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  getFamilyCode(): string {
+    return localStorage.getItem(CODE_KEY) ?? "";
+  },
+  setFamilyCode(code: string): void {
+    if (code) localStorage.setItem(CODE_KEY, code);
+    else localStorage.removeItem(CODE_KEY);
+  },
+  getSyncedAt(): number {
+    return Number(localStorage.getItem(SYNC_AT_KEY) || 0);
+  },
+  setSyncedAt(ts: number): void {
+    localStorage.setItem(SYNC_AT_KEY, String(ts));
   },
 
   // --- onboarding / personalisation ---

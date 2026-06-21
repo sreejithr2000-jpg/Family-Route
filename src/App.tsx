@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { Landing } from "./screens/Landing";
 import { WhoAreYou } from "./screens/WhoAreYou";
@@ -8,8 +9,16 @@ import { Events } from "./screens/Events";
 import { Invite } from "./screens/Invite";
 import { Family } from "./screens/Family";
 import { Welcome } from "./screens/Welcome";
+import { Settings } from "./screens/Settings";
+import { startAutoSync } from "./sync/cloud";
 
 export default function App() {
+  // If this device is connected to a shared family, pull on load and keep
+  // pushing changes up (no-op when cloud sync isn't configured).
+  useEffect(() => {
+    startAutoSync();
+  }, []);
+
   return (
     <HashRouter>
       <Routes>
@@ -22,6 +31,7 @@ export default function App() {
         <Route path="/events" element={<Events />} />
         <Route path="/invite" element={<Invite />} />
         <Route path="/family" element={<Family />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </HashRouter>
   );
